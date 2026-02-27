@@ -7,7 +7,7 @@ import re
 import string
 import pandas as pd
 from websocket import create_connection
-import requests
+from curl_cffi import requests
 import json
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ class TvDatafeed:
                     "remember": "on"}
             try:
                 response = requests.post(
-                    url=self.__sign_in_url, data=data, headers=self.__signin_headers)
+                    url=self.__sign_in_url, data=data, headers=self.__signin_headers, impersonate="chrome")
                 token = response.json()['user']['auth_token']
             except Exception as e:
                 logger.error('error while signin')
@@ -294,7 +294,7 @@ class TvDatafeed:
 
         symbols_list = []
         try:
-            resp = requests.get(url)
+            resp = requests.get(url, impersonate="chrome")
 
             symbols_list = json.loads(resp.text.replace(
                 '</em>', '').replace('<em>', ''))
